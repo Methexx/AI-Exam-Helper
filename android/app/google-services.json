@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "994117220370",
+    "project_id": "coinwelldigital",
+    "storage_bucket": "coinwelldigital.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:994117220370:android:8d565532c11bd6290940cb",
+        "android_client_info": {
+          "package_name": "com.example.coinwell"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaH0o_dLlW461THY0cOTMPC1av555_QSo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
