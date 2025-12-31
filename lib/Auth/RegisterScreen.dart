@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../services/auth_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -16,6 +17,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _confirmPasswordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final AuthService _authService = AuthService();
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
   bool _isLoading = false;
@@ -104,6 +106,38 @@ class _RegisterScreenState extends State<RegisterScreen> {
         behavior: SnackBarBehavior.floating,
       ),
     );
+  }
+
+  Future<void> _signInWithGoogle() async {
+    setState(() => _isLoading = true);
+    try {
+      final userCredential = await _authService.signInWithGoogle();
+      if (userCredential != null && mounted) {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
+    } catch (e) {
+      if (mounted) {
+        _showMessage('Google sign-in failed: ${e.toString()}', isError: true);
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _signInWithFacebook() async {
+    setState(() => _isLoading = true);
+    try {
+      final userCredential = await _authService.signInWithFacebook();
+      if (userCredential != null && mounted) {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
+    } catch (e) {
+      if (mounted) {
+        _showMessage('Facebook sign-in failed: ${e.toString()}', isError: true);
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   @override
@@ -307,23 +341,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     _buildSocialButton(
                       icon: Icons.facebook,
                       color: const Color(0xFF1877F2),
-                      onPressed: () {
-                        // Handle Facebook registration
-                      },
+                      onPressed: _isLoading ? () {} : _signInWithFacebook,
                     ),
                     _buildSocialButton(
                       icon: Icons.g_mobiledata,
                       color: const Color(0xFFDB4437),
-                      onPressed: () {
-                        // Handle Google registration
-                      },
+                      onPressed: _isLoading ? () {} : _signInWithGoogle,
                       isGoogle: true,
                     ),
                     _buildSocialButton(
                       icon: Icons.apple,
                       color: Colors.black,
                       onPressed: () {
-                        // Handle Apple registration
+                        // Handle Apple registration (requires additional setup)
+                        _showMessage('Apple sign-in coming soon', isError: false);
                       },
                     ),
                   ],
