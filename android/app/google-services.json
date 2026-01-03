@@ -12,7 +12,20 @@
           "package_name": "com.example.coinwell"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "994117220370-bfgr71grd24p3h5ekdok6dqb2jjg0ip3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.coinwell",
+            "certificate_hash": "b66efd8e234e8c9fbbd502ad2855f13b4c1a04b8"
+          }
+        },
+        {
+          "client_id": "994117220370-19svrnd9qi3e0n2425fp53eghvnv69j7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAaH0o_dLlW461THY0cOTMPC1av555_QSo"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "994117220370-19svrnd9qi3e0n2425fp53eghvnv69j7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "994117220370-qj3tp1ruc30f8c71gjo42umdc3f950rn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.coinwell"
+              }
+            }
+          ]
         }
       }
     }

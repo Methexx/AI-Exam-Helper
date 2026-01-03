@@ -6,7 +6,10 @@ import 'package:flutter/foundation.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    serverClientId:
+        '994117220370-19svrnd9qi3e0n2425fp53eghvnv69j7.apps.googleusercontent.com',
+  );
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Google Sign In
