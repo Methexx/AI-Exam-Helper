@@ -1,96 +1,66 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/auth_service.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
-  final TextEditingController _usernameController = TextEditingController();
+class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final AuthService _authService = AuthService();
   bool _isPasswordVisible = false;
-  bool _isConfirmPasswordVisible = false;
   bool _isLoading = false;
 
   @override
   void dispose() {
-    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
-    _confirmPasswordController.dispose();
     super.dispose();
   }
 
-  Future<void> _register() async {
-    if (_usernameController.text.trim().isEmpty ||
-        _emailController.text.trim().isEmpty ||
+  Future<void> _login() async {
+    if (_emailController.text.trim().isEmpty ||
         _passwordController.text.isEmpty) {
-      _showMessage('Please fill in all fields', isError: true);
-      return;
-    }
-
-    if (_passwordController.text != _confirmPasswordController.text) {
-      _showMessage('Passwords do not match', isError: true);
-      return;
-    }
-
-    if (_passwordController.text.length < 6) {
-      _showMessage('Password must be at least 6 characters', isError: true);
+      _showMessage('Please enter email and password', isError: true);
       return;
     }
 
     setState(() => _isLoading = true);
 
     try {
-      // Create user with email and password
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      await _auth.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
 
-      // Update display name
-      await userCredential.user?.updateDisplayName(_usernameController.text.trim());
-
-      // Save user data to Firestore
-      await _firestore.collection('users').doc(userCredential.user?.uid).set({
-        'username': _usernameController.text.trim(),
-        'email': _emailController.text.trim(),
-        'createdAt': FieldValue.serverTimestamp(),
-      });
-
       if (mounted) {
-        _showMessage('Account created successfully!');
-        await Future.delayed(const Duration(seconds: 1));
         Navigator.pushReplacementNamed(context, '/home');
       }
     } on FirebaseAuthException catch (e) {
       String message;
       switch (e.code) {
-        case 'email-already-in-use':
-          message = 'An account already exists with this email';
+        case 'user-not-found':
+          message = 'No account found with this email';
+          break;
+        case 'wrong-password':
+          message = 'Incorrect password';
           break;
         case 'invalid-email':
           message = 'Invalid email address';
           break;
-        case 'weak-password':
-          message = 'Password is too weak';
+        case 'user-disabled':
+          message = 'This account has been disabled';
           break;
         default:
-          message = 'Registration failed. Please try again';
+          message = 'Login failed. Please try again';
       }
       _showMessage(message, isError: true);
-    } catch (e) {
-      _showMessage('An error occurred. Please try again', isError: true);
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
@@ -159,10 +129,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   constraints: const BoxConstraints(),
                 ),
                 const SizedBox(height: 30),
-                
+
                 // Welcome Text
                 const Text(
-                  'Hello! Register to get\nstarted',
+                  'Welcome back! Glad\nto see you, Again!',
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
@@ -171,33 +141,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 40),
-                
-                // Username TextField
-                TextField(
-                  controller: _usernameController,
-                  decoration: InputDecoration(
-                    hintText: 'Username',
-                    hintStyle: TextStyle(color: Colors.grey[400]),
-                    filled: true,
-                    fillColor: const Color(0xFFF7F8F9),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 18,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 15),
-                
+
                 // Email TextField
                 TextField(
                   controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
-                    hintText: 'Email',
+                    hintText: 'Enter your email',
                     hintStyle: TextStyle(color: Colors.grey[400]),
                     filled: true,
                     fillColor: const Color(0xFFF7F8F9),
@@ -212,13 +161,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 15),
-                
+
                 // Password TextField
                 TextField(
                   controller: _passwordController,
                   obscureText: !_isPasswordVisible,
                   decoration: InputDecoration(
-                    hintText: 'Password',
+                    hintText: 'Enter your password',
                     hintStyle: TextStyle(color: Colors.grey[400]),
                     filled: true,
                     fillColor: const Color(0xFFF7F8F9),
@@ -246,50 +195,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 15),
-                
-                // Confirm Password TextField
-                TextField(
-                  controller: _confirmPasswordController,
-                  obscureText: !_isConfirmPasswordVisible,
-                  decoration: InputDecoration(
-                    hintText: 'Confirm password',
-                    hintStyle: TextStyle(color: Colors.grey[400]),
-                    filled: true,
-                    fillColor: const Color(0xFFF7F8F9),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 18,
-                    ),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _isConfirmPasswordVisible
-                            ? Icons.visibility_outlined
-                            : Icons.visibility_off_outlined,
-                        color: Colors.grey[600],
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
-                        });
-                      },
+
+                // Forgot Password
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/forgot-password');
+                    },
+                    child: const Text(
+                      'Forgot Password?',
+                      style: TextStyle(color: Colors.grey, fontSize: 14),
                     ),
                   ),
                 ),
-                const SizedBox(height: 30),
-                
-                // Register Button
+                const SizedBox(height: 20),
+
+                // Login Button
                 SizedBox(
                   width: double.infinity,
                   height: 56,
                   child: ElevatedButton(
-                    onPressed: _isLoading ? null : _register,
+                    onPressed: _isLoading ? null : _login,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1E232C),
-                      disabledBackgroundColor: const Color(0xFF1E232C).withOpacity(0.6),
+                      disabledBackgroundColor: const Color(
+                        0xFF1E232C,
+                      ).withValues(alpha: 0.6),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -300,11 +232,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             width: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
                             ),
                           )
                         : const Text(
-                            'Register',
+                            'Login',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -314,26 +248,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 35),
-                
-                // Or Register with
+
+                // Or Login with
                 const Row(
                   children: [
                     Expanded(child: Divider()),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
-                        'Or Register with',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
-                        ),
+                        'Or Login with',
+                        style: TextStyle(color: Colors.grey, fontSize: 14),
                       ),
                     ),
                     Expanded(child: Divider()),
                   ],
                 ),
                 const SizedBox(height: 25),
-                
+
                 // Social Login Buttons
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -353,32 +284,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       icon: Icons.apple,
                       color: Colors.black,
                       onPressed: () {
-                        // Handle Apple registration (requires additional setup)
-                        _showMessage('Apple sign-in coming soon', isError: false);
+                        // Handle Apple login (requires additional setup)
+                        _showMessage(
+                          'Apple sign-in coming soon',
+                          isError: false,
+                        );
                       },
                     ),
                   ],
                 ),
                 const SizedBox(height: 40),
-                
-                // Login Link
+
+                // Register Link
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      'Already have an account? ',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                      ),
+                      "Don't have an account? ",
+                      style: TextStyle(color: Colors.black, fontSize: 14),
                     ),
                     GestureDetector(
                       onTap: () {
-                        // Navigate to login screen
-                        Navigator.pop(context);
+                        // Navigate to register screen
+                        Navigator.pushNamed(context, '/register');
                       },
                       child: const Text(
-                        'Login Now',
+                        'Register Now',
                         style: TextStyle(
                           color: Color(0xFF35C2C1),
                           fontSize: 14,
@@ -410,11 +341,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: IconButton(
-        icon: Icon(
-          icon,
-          color: color,
-          size: isGoogle ? 40 : 30,
-        ),
+        icon: Icon(icon, color: color, size: isGoogle ? 40 : 30),
         onPressed: onPressed,
       ),
     );

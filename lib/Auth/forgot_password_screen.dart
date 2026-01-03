@@ -29,11 +29,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
     try {
       await _auth.sendPasswordResetEmail(email: _emailController.text.trim());
-      
+
       if (mounted) {
         _showMessage('Password reset email sent! Check your inbox.');
         await Future.delayed(const Duration(seconds: 2));
-        Navigator.pop(context);
+        if (mounted) {
+          Navigator.pop(context);
+        }
       }
     } on FirebaseAuthException catch (e) {
       String message;
@@ -84,7 +86,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   constraints: const BoxConstraints(),
                 ),
                 const SizedBox(height: 30),
-                
+
                 // Title
                 const Text(
                   'Forgot Password?',
@@ -96,7 +98,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                 ),
                 const SizedBox(height: 15),
-                
+
                 // Description
                 Text(
                   "Don't worry! It occurs. Please enter the email address linked with your account.",
@@ -107,7 +109,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                 ),
                 const SizedBox(height: 40),
-                
+
                 // Email TextField
                 TextField(
                   controller: _emailController,
@@ -128,7 +130,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                 ),
                 const SizedBox(height: 30),
-                
+
                 // Send Code Button
                 SizedBox(
                   width: double.infinity,
@@ -137,7 +139,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     onPressed: _isLoading ? null : _resetPassword,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1E232C),
-                      disabledBackgroundColor: const Color(0xFF1E232C).withOpacity(0.6),
+                      disabledBackgroundColor: const Color(
+                        0xFF1E232C,
+                      ).withValues(alpha: 0.6),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -148,7 +152,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             width: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
                             ),
                           )
                         : const Text(
@@ -162,17 +168,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                 ),
                 const SizedBox(height: 30),
-                
+
                 // Remember Password Link
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
                       'Remember Password? ',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                      ),
+                      style: TextStyle(color: Colors.black, fontSize: 14),
                     ),
                     GestureDetector(
                       onTap: () => Navigator.pop(context),

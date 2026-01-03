@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -13,13 +14,14 @@ class AuthService {
     try {
       // Trigger the authentication flow
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      
+
       if (googleUser == null) {
         return null; // User canceled the sign-in
       }
 
       // Obtain the auth details from the request
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
@@ -28,14 +30,16 @@ class AuthService {
       );
 
       // Sign in to Firebase with the Google credential
-      UserCredential userCredential = await _auth.signInWithCredential(credential);
+      UserCredential userCredential = await _auth.signInWithCredential(
+        credential,
+      );
 
       // Save user data to Firestore
       await _saveUserToFirestore(userCredential.user);
 
       return userCredential;
     } catch (e) {
-      print('Error signing in with Google: $e');
+      debugPrint('Error signing in with Google: $e');
       rethrow;
     }
   }
@@ -51,19 +55,20 @@ class AuthService {
       }
 
       // Create a credential from the access token
-      final OAuthCredential facebookAuthCredential = 
+      final OAuthCredential facebookAuthCredential =
           FacebookAuthProvider.credential(loginResult.accessToken!.tokenString);
 
       // Sign in to Firebase with the Facebook credential
-      UserCredential userCredential = 
-          await _auth.signInWithCredential(facebookAuthCredential);
+      UserCredential userCredential = await _auth.signInWithCredential(
+        facebookAuthCredential,
+      );
 
       // Save user data to Firestore
       await _saveUserToFirestore(userCredential.user);
 
       return userCredential;
     } catch (e) {
-      print('Error signing in with Facebook: $e');
+      debugPrint('Error signing in with Facebook: $e');
       rethrow;
     }
   }

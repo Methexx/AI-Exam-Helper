@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -12,11 +11,7 @@ class WelcomeScreen extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFE8F4F8),
-              Color(0xFFF5F7FA),
-              Color(0xFFFFFFFF),
-            ],
+            colors: [Color(0xFFE8F4F8), Color(0xFFF5F7FA), Color(0xFFFFFFFF)],
           ),
         ),
         child: SafeArea(
@@ -35,14 +30,14 @@ class WelcomeScreen extends StatelessWidget {
                       width: 100,
                       height: 120,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF00BCD4).withOpacity(0.15),
+                        color: const Color(0xFF00BCD4).withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(50),
                       ),
                       child: Center(
                         child: Icon(
                           Icons.eco,
                           size: 60,
-                          color: const Color(0xFF2E7D32).withOpacity(0.6),
+                          color: const Color(0xFF2E7D32).withValues(alpha: 0.6),
                         ),
                       ),
                     ),
@@ -52,14 +47,14 @@ class WelcomeScreen extends StatelessWidget {
                       width: 90,
                       height: 130,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.8),
+                        color: Colors.white.withValues(alpha: 0.8),
                         borderRadius: BorderRadius.circular(45),
                       ),
                       child: Center(
                         child: Icon(
                           Icons.grass,
                           size: 55,
-                          color: const Color(0xFF558B2F).withOpacity(0.6),
+                          color: const Color(0xFF558B2F).withValues(alpha: 0.6),
                         ),
                       ),
                     ),
@@ -74,7 +69,7 @@ class WelcomeScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Spacer(flex: 2),
-                      
+
                       // Logo
                       Container(
                         width: 80,
@@ -84,7 +79,9 @@ class WelcomeScreen extends StatelessWidget {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF00BCD4).withOpacity(0.3),
+                              color: const Color(
+                                0xFF00BCD4,
+                              ).withValues(alpha: 0.3),
                               blurRadius: 20,
                               offset: const Offset(0, 10),
                             ),
@@ -99,7 +96,7 @@ class WelcomeScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      
+
                       // App name
                       const Text(
                         'CoinWell Digital',
@@ -110,9 +107,9 @@ class WelcomeScreen extends StatelessWidget {
                           letterSpacing: 0.5,
                         ),
                       ),
-                      
+
                       const Spacer(flex: 3),
-                      
+
                       // Login button
                       SizedBox(
                         width: double.infinity,
@@ -141,7 +138,7 @@ class WelcomeScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      
+
                       // Register button
                       SizedBox(
                         width: double.infinity,
@@ -172,7 +169,7 @@ class WelcomeScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      
+
                       // Continue as guest
                       TextButton(
                         onPressed: () {
@@ -189,7 +186,7 @@ class WelcomeScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      
+
                       const Spacer(flex: 1),
                     ],
                   ),
