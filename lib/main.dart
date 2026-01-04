@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'welcome.dart';
-import 'Auth/login_screen.dart';
-import 'Auth/register_screen.dart';
-import 'Auth/forgot_password_screen.dart';
+import 'features/auth/login_screen.dart';
+import 'features/auth/register_screen.dart';
+import 'features/auth/forgot_password_screen.dart';
 import 'home.dart';
 
 void main() async {
