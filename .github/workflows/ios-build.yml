@@ -1,0 +1,58 @@
+name: iOS Build
+
+on:
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+  push:
+    branches:
+      - main
+      - feat/**
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run Flutter analyze
+        run: flutter analyze
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Build iOS (No Codesign)
+        run: |
+          flutter build ios --release --no-codesign
+        working-directory: ${{ github.workspace }}
+
+      - name: Create IPA (unsigned)
+        run: |
+          mkdir -p Payload
+          cp -r build/ios/iphoneos/Runner.app Payload/
+          zip -r app-unsigned.ipa Payload
+        working-directory: ${{ github.workspace }}
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-unsigned-ipa
+          path: app-unsigned.ipa
+          retention-days: 30
+
+      - name: Build Summary
+        run: |
+          echo "✅ iOS build completed successfully!"
+          echo "📦 Download the IPA from the Actions artifacts"
+          echo "⚠️  Note: This IPA is unsigned and requires manual signing"
