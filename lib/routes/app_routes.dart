@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import '../features/auth/login_screen.dart';
 import '../features/auth/register_screen.dart';
 import '../features/auth/forgot_password_screen.dart';
+import '../features/scan/scan_screen.dart';
+import '../features/result/result_screen.dart';
+import '../features/history/history_screen.dart';
+import '../features/profile/profile_screen.dart';
 import '../welcome.dart';
 import '../home.dart';
 
@@ -35,23 +39,23 @@ class AppRoutes {
       case home:
         return MaterialPageRoute(builder: (_) => const Home());
 
-      // case scan:
-      //   return MaterialPageRoute(builder: (_) => const ScanScreen());
+      case scan:
+        return MaterialPageRoute(builder: (_) => const ScanScreen());
 
-      // case result:
-      //   final args = settings.arguments as Map<String, dynamic>?;
-      //   return MaterialPageRoute(
-      //     builder: (_) => ResultScreen(
-      //       question: args?['question'] ?? '',
-      //       answer: args?['answer'] ?? '',
-      //     ),
-      //   );
+      case result:
+        final args = settings.arguments as Map<String, dynamic>?;
+        return MaterialPageRoute(
+          builder: (_) => ResultScreen(
+            question: args?['question'] ?? '',
+            answer: args?['answer'] ?? '',
+          ),
+        );
 
-      // case history:
-      //   return MaterialPageRoute(builder: (_) => const HistoryScreen());
+      case history:
+        return MaterialPageRoute(builder: (_) => const HistoryScreen());
 
-      // case profile:
-      //   return MaterialPageRoute(builder: (_) => const ProfileScreen());
+      case profile:
+        return MaterialPageRoute(builder: (_) => const ProfileScreen());
 
       default:
         return MaterialPageRoute(
