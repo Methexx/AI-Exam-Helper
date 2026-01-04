@@ -32,6 +32,10 @@ target 'Runner' do
   use_modular_headers!
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+  
+  # Explicitly specify compatible versions for GoogleMLKit
+  pod 'GoogleMLKit/TextRecognition', '~> 6.0.0'
+  pod 'GoogleUtilities', '~> 7.13'
 end
 
 post_install do |installer|

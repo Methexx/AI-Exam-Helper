@@ -27,6 +27,8 @@ jobs:
       - name: Install CocoaPods dependencies
         run: |
           cd ios
+          pod repo update
+          pod cache clean --all
           pod install
 
       - name: Run Flutter analyze
