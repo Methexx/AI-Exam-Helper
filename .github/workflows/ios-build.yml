@@ -40,13 +40,12 @@ jobs:
           rm -rf Pods
           rm -rf Podfile.lock
           pod cache clean --all
-
-      - name: Update CocoaPods repo
-        run: pod repo update
+          cd ..
+          rm -rf ~/Library/Developer/Xcode/DerivedData/*
 
       - name: Install CocoaPods dependencies
         working-directory: ios
-        run: pod install --verbose
+        run: pod install --repo-update --verbose
 
       - name: Run Flutter analyze
         run: flutter analyze
