@@ -23,11 +23,18 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Clean CocoaPods cache
+        run: |
+          cd ios
+          rm -rf Pods
+          rm -rf Podfile.lock
+          rm -rf ~/Library/Caches/CocoaPods
+
       - name: Install CocoaPods dependencies
         run: |
           cd ios
           pod repo update
-          pod install
+          pod install --verbose
 
       - name: Run Flutter analyze
         run: flutter analyze
