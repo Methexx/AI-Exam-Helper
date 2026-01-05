@@ -23,6 +23,11 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Install/Update CocoaPods
+        run: |
+          sudo gem install cocoapods
+          pod --version
+
       - name: Clean CocoaPods cache
         run: |
           cd ios
