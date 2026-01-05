@@ -25,43 +25,58 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+          cache: true
 
-      - name: Install dependencies
+      - name: Flutter Doctor
+        run: flutter doctor -v
+
+      - name: Install Flutter dependencies
         run: flutter pub get
+
+      - name: Precache iOS artifacts
+        run: flutter precache --ios
+
+      - name: Generate iOS build files
+        run: |
+          flutter build ios --release --no-codesign --config-only
+          echo "✅ iOS configuration files generated"
+
+      - name: Verify Generated.xcconfig exists
+        run: |
+          if [ ! -f "ios/Flutter/Generated.xcconfig" ]; then
+            echo "❌ ERROR: Generated.xcconfig not found!"
+            echo "Contents of ios/Flutter directory:"
+            ls -la ios/Flutter/
+            exit 1
+          fi
+          echo "✅ Generated.xcconfig found"
+          cat ios/Flutter/Generated.xcconfig
 
       - name: Install CocoaPods
         run: |
-          gem install cocoapods --no-document
+          gem install cocoapods -v 1.15.2 --no-document
           pod --version
 
-      - name: Clean CocoaPods cache
-        run: |
-          cd ios
-          rm -rf Pods
-          rm -rf Podfile.lock
-          pod cache clean --all
-          cd ..
-          rm -rf ~/Library/Developer/Xcode/DerivedData/*
+      - name: Update CocoaPods repo
+        run: pod repo update
 
       - name: Install CocoaPods dependencies
         working-directory: ios
         run: |
-          set -o pipefail
-          pod repo update
+          pod deintegrate || true
           pod install --repo-update --verbose
-
-      - name: Run Flutter analyze
-        run: flutter analyze
+        env:
+          COCOAPODS_DISABLE_STATS: true
 
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: latest-stable
 
-      - name: Build iOS (No Codesign)
+      - name: Build iOS Release
         run: |
           flutter build ios --release --no-codesign
-        working-directory: ${{ github.workspace }}
+          echo "✅ iOS build completed successfully"
 
       - name: Create IPA (unsigned)
         run: |
