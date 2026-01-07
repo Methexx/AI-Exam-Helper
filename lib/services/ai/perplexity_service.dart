@@ -3,7 +3,106 @@ import 'package:http/http.dart' as http;
 import '../../core/constants/api_constants.dart';
 
 class PerplexityService {
-  /// Generate explanation for an exam question using Perplexity API
+  /// Generate explanation with streaming for real-time response
+  Stream<String> generateExplanationStream(String question) async* {
+    try {
+      // Validate input
+      if (question.isEmpty) {
+        throw Exception('Question cannot be empty');
+      }
+
+      // Validate API key is set
+      if (ApiConstants.perplexityApiKey.isEmpty) {
+        throw Exception(
+          'Perplexity API key not configured. Please add PERPLEXITY_API_KEY to your .env file.',
+        );
+      }
+
+      // Create prompt from template
+      final prompt = ApiConstants.examQuestionPrompt.replaceAll(
+        '{question}',
+        question,
+      );
+
+      final request = http.Request(
+        'POST',
+        Uri.parse('https://api.perplexity.ai/chat/completions'),
+      );
+
+      request.headers.addAll({
+        'Authorization': 'Bearer ${ApiConstants.perplexityApiKey}',
+        'Content-Type': 'application/json',
+      });
+
+      request.body = jsonEncode({
+        'model': ApiConstants.perplexityModel,
+        'messages': [
+          {
+            'role': 'system',
+            'content': 'You are a concise tutor. Keep answers clear but brief.',
+          },
+          {'role': 'user', 'content': prompt},
+        ],
+        'temperature': 0.5,
+        'max_tokens': 1000,
+        'stream': true, // Enable streaming
+      });
+
+      final streamedResponse = await request.send().timeout(
+        Duration(seconds: ApiConstants.receiveTimeout),
+      );
+
+      if (streamedResponse.statusCode == 200) {
+        String fullResponse = '';
+
+        await for (var chunk in streamedResponse.stream.transform(
+          utf8.decoder,
+        )) {
+          // Parse SSE format from Perplexity
+          final lines = chunk.split('\n');
+          for (var line in lines) {
+            if (line.startsWith('data: ')) {
+              final data = line.substring(6);
+              if (data.trim() == '[DONE]') continue;
+
+              try {
+                final json = jsonDecode(data);
+                final content = json['choices']?[0]?['delta']?['content'];
+                if (content != null) {
+                  fullResponse += content;
+                  yield fullResponse; // Yield incremental response
+                }
+              } catch (e) {
+                // Skip invalid JSON chunks
+                continue;
+              }
+            }
+          }
+        }
+
+        if (fullResponse.isEmpty) {
+          throw Exception('AI generated empty response');
+        }
+      } else if (streamedResponse.statusCode == 401) {
+        throw Exception(
+          'Invalid API key. Please check your Perplexity API key.',
+        );
+      } else if (streamedResponse.statusCode == 429) {
+        throw Exception('Rate limit exceeded. Please try again later.');
+      } else {
+        throw Exception(
+          'Perplexity API Error: Status ${streamedResponse.statusCode}',
+        );
+      }
+    } catch (e) {
+      if (e.toString().contains('API key')) {
+        rethrow;
+      }
+      throw Exception('Failed to generate explanation: ${e.toString()}');
+    }
+  }
+
+  /// Generate explanation for an exam question using Perplexity API (non-streaming)
   Future<String> generateExplanation(String question) async {
     try {
       // Validate input
@@ -38,12 +137,13 @@ class PerplexityService {
                 {
                   'role': 'system',
                   'content':
-                      'You are an expert tutor helping students understand exam questions.',
+                      'You are a concise tutor. Keep answers clear but brief.',
                 },
                 {'role': 'user', 'content': prompt},
               ],
-              'temperature': 0.7,
-              'max_tokens': 2000,
+              'temperature': 0.5,
+              'max_tokens': 1000, // Reduced for faster response
+              'stream': false,
             }),
           )
           .timeout(

@@ -6,9 +6,18 @@ import '../../core/utils/helpers.dart';
 
 class ResultScreen extends StatefulWidget {
   final String question;
-  final String answer;
+  final String? answer;
+  final Stream<String>? answerStream;
 
-  const ResultScreen({super.key, required this.question, required this.answer});
+  const ResultScreen({
+    super.key,
+    required this.question,
+    this.answer,
+    this.answerStream,
+  }) : assert(
+         answer != null || answerStream != null,
+         'Either answer or answerStream must be provided',
+       );
 
   @override
   State<ResultScreen> createState() => _ResultScreenState();
@@ -18,6 +27,42 @@ class _ResultScreenState extends State<ResultScreen> {
   final FirestoreService _firestoreService = FirestoreService();
   bool _isSaving = false;
   bool _isSaved = false;
+  String _currentAnswer = '';
+  bool _isStreaming = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.answer != null) {
+      _currentAnswer = widget.answer!;
+    } else if (widget.answerStream != null) {
+      _isStreaming = true;
+      _listenToStream();
+    }
+  }
+
+  void _listenToStream() {
+    widget.answerStream!.listen(
+      (partialAnswer) {
+        if (mounted) {
+          setState(() {
+            _currentAnswer = partialAnswer;
+          });
+        }
+      },
+      onError: (error) {
+        if (mounted) {
+          setState(() => _isStreaming = false);
+          AppHelpers.showError(context, error.toString());
+        }
+      },
+      onDone: () {
+        if (mounted) {
+          setState(() => _isStreaming = false);
+        }
+      },
+    );
+  }
 
   Future<void> _saveQuestion() async {
     try {
@@ -25,7 +70,7 @@ class _ResultScreenState extends State<ResultScreen> {
 
       await _firestoreService.saveQuestion(
         question: widget.question,
-        answer: widget.answer,
+        answer: _currentAnswer,
       );
 
       setState(() {
@@ -46,8 +91,7 @@ class _ResultScreenState extends State<ResultScreen> {
   }
 
   void _shareContent() {
-    final content =
-        'Question:\n${widget.question}\n\nAnswer:\n${widget.answer}';
+    final content = 'Question:\n${widget.question}\n\nAnswer:\n$_currentAnswer';
     Clipboard.setData(ClipboardData(text: content));
     AppHelpers.showSuccess(context, 'Copied to clipboard!');
   }
@@ -121,10 +165,35 @@ class _ResultScreenState extends State<ResultScreen> {
                     const SizedBox(height: AppConstants.smallPadding),
                     const Divider(),
                     const SizedBox(height: AppConstants.smallPadding),
-                    Text(
-                      widget.answer,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
+                    _isStreaming && _currentAnswer.isEmpty
+                        ? const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(20.0),
+                              child: CircularProgressIndicator(),
+                            ),
+                          )
+                        : Text(
+                            _currentAnswer,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                    if (_isStreaming && _currentAnswer.isNotEmpty)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 16.0),
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              'Generating...',
+                              style: TextStyle(fontStyle: FontStyle.italic),
+                            ),
+                          ],
+                        ),
+                      ),
                   ],
                 ),
               ),

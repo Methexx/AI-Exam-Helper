@@ -4,30 +4,25 @@ class ApiConstants {
   // Perplexity API Configuration
   static String get perplexityApiKey => dotenv.env['PERPLEXITY_API_KEY'] ?? '';
 
-  // Perplexity Model (Pro models: sonar-pro, sonar-reasoning)
-  static const String perplexityModel = 'sonar-pro';
+  // Perplexity Model - sonar is 3x faster than sonar-pro
+  // Options: 'sonar' (fast), 'sonar-pro' (accurate but slower)
+  static const String perplexityModel = 'sonar';
 
   // API Timeouts
-  static const int connectionTimeout = 30; // seconds
-  static const int receiveTimeout = 60; // seconds
+  static const int connectionTimeout = 15; // seconds
+  static const int receiveTimeout = 30; // seconds
 
   // Rate Limits (Adjust based on your Perplexity plan)
   static const int maxRequestsPerMinute = 100;
   static const int maxRequestsPerDay = 5000;
 
-  // Prompt Templates
+  // Prompt Templates - Shorter prompts = faster responses
   static const String examQuestionPrompt = '''
-You are an expert tutor helping a student understand an exam question.
+Explain this exam question clearly and concisely:
 
-Question: {question}
+{question}
 
-Please provide:
-1. A brief explanation of what the question is asking
-2. Step-by-step solution or approach
-3. Key concepts involved
-4. Final answer (if applicable)
-
-Format your response in a clear, student-friendly manner with proper sections.
+Provide: brief explanation, step-by-step solution, key concepts, and final answer.
 ''';
 
   static const String clarificationPrompt = '''

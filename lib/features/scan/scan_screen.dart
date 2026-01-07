@@ -5,7 +5,7 @@ import '../../services/ocr/ocr_service.dart';
 import '../../services/ai/perplexity_service.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/utils/helpers.dart';
-import '../../routes/app_routes.dart';
+import '../result/result_screen.dart';
 
 class ScanScreen extends StatefulWidget {
   const ScanScreen({super.key});
@@ -77,15 +77,22 @@ class _ScanScreenState extends State<ScanScreen> {
     try {
       setState(() => _isProcessing = true);
 
-      final answer = await _perplexityService.generateExplanation(
-        _extractedText!,
-      );
+      // Navigate to result screen immediately with streaming
+      if (mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ResultScreen(
+              question: _extractedText!,
+              answerStream: _perplexityService.generateExplanationStream(
+                _extractedText!,
+              ),
+            ),
+          ),
+        );
+      }
 
       setState(() => _isProcessing = false);
-
-      if (mounted) {
-        AppRoutes.navigateToResult(context, _extractedText!, answer);
-      }
     } catch (e) {
       setState(() => _isProcessing = false);
 
