@@ -1,18 +1,19 @@
-class ApiConstants {
-  // Gemini API Configuration
-  // TODO: Replace with your actual Gemini API key from https://makersuite.google.com/app/apikey
-  static const String geminiApiKey = 'YOUR_GEMINI_API_KEY_HERE';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-  // Gemini Model
-  static const String geminiModel = 'gemini-1.5-flash';
+class ApiConstants {
+  // Perplexity API Configuration
+  static String get perplexityApiKey => dotenv.env['PERPLEXITY_API_KEY'] ?? '';
+
+  // Perplexity Model (Pro models: sonar-pro, sonar-reasoning)
+  static const String perplexityModel = 'sonar-pro';
 
   // API Timeouts
   static const int connectionTimeout = 30; // seconds
   static const int receiveTimeout = 60; // seconds
 
-  // Rate Limits (Free Tier)
-  static const int maxRequestsPerMinute = 60;
-  static const int maxRequestsPerDay = 1500;
+  // Rate Limits (Adjust based on your Perplexity plan)
+  static const int maxRequestsPerMinute = 100;
+  static const int maxRequestsPerDay = 5000;
 
   // Prompt Templates
   static const String examQuestionPrompt = '''

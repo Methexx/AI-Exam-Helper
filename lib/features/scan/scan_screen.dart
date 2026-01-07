@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../services/ocr/ocr_service.dart';
-import '../../services/ai/gemini_service.dart';
+import '../../services/ai/perplexity_service.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/utils/helpers.dart';
 import '../../routes/app_routes.dart';
@@ -17,7 +17,7 @@ class ScanScreen extends StatefulWidget {
 class _ScanScreenState extends State<ScanScreen> {
   final ImagePicker _imagePicker = ImagePicker();
   final OcrService _ocrService = OcrService();
-  final GeminiService _geminiService = GeminiService();
+  final PerplexityService _perplexityService = PerplexityService();
 
   File? _selectedImage;
   String? _extractedText;
@@ -77,7 +77,9 @@ class _ScanScreenState extends State<ScanScreen> {
     try {
       setState(() => _isProcessing = true);
 
-      final answer = await _geminiService.generateExplanation(_extractedText!);
+      final answer = await _perplexityService.generateExplanation(
+        _extractedText!,
+      );
 
       setState(() => _isProcessing = false);
 

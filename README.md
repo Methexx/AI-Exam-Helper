@@ -165,6 +165,6 @@ It is designed as a **portfolio-grade project**, not just a demo.
 
 Built by a developer passionate about **AI, mobile apps, and education technology**.
 
----
+--- 
 
 ⭐ If you find this project useful or inspiring, feel free to star the repository!
