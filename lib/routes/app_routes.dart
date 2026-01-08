@@ -6,12 +6,14 @@ import '../features/scan/scan_screen.dart';
 import '../features/result/result_screen.dart';
 import '../features/history/history_screen.dart';
 import '../features/profile/profile_screen.dart';
+import '../features/splash/splash_screen.dart';
 import '../welcome.dart';
 import '../home.dart';
 
 class AppRoutes {
   // Route Names
-  static const String welcome = '/';
+  static const String splash = '/';
+  static const String welcome = '/welcome';
   static const String login = '/login';
   static const String register = '/register';
   static const String forgotPassword = '/forgot-password';
@@ -24,6 +26,9 @@ class AppRoutes {
   // Route Generator
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case splash:
+        return MaterialPageRoute(builder: (_) => const SplashScreen());
+
       case welcome:
         return MaterialPageRoute(builder: (_) => const WelcomeScreen());
 
