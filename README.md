@@ -168,3 +168,4 @@ Built by a developer passionate about **AI, mobile apps, and education technolog
 --- 
 
 ⭐ If you find this project useful or inspiring, feel free to star the repository!
+    
