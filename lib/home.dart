@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'services/firestore/firestore_service.dart';
 import 'models/question_model.dart';
-import 'core/constants/app_constants.dart';
 import 'core/utils/helpers.dart';
 import 'routes/app_routes.dart';
 import 'features/result/result_screen.dart';
@@ -188,7 +187,9 @@ class _HomeState extends State<Home> {
                           'No history yet. Start chatting!',
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 14,
-                            color: const Color(0xFFEFD9B0).withOpacity(0.7),
+                            color: const Color(
+                              0xFFEFD9B0,
+                            ).withValues(alpha: 0.7),
                           ),
                         ),
                       )
@@ -304,7 +305,7 @@ class _HomeState extends State<Home> {
                   dateStr,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 10,
-                    color: const Color(0xFFEFD9B0).withOpacity(0.7),
+                    color: const Color(0xFFEFD9B0).withValues(alpha: 0.7),
                   ),
                 ),
               ],
@@ -322,7 +323,7 @@ class _HomeState extends State<Home> {
                   timeStr,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 10,
-                    color: const Color(0xFFEFD9B0).withOpacity(0.7),
+                    color: const Color(0xFFEFD9B0).withValues(alpha: 0.7),
                   ),
                 ),
               ],
@@ -345,14 +346,14 @@ class _HomeState extends State<Home> {
                   'More',
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 11,
-                    color: const Color(0xFFEFD9B0).withOpacity(0.7),
+                    color: const Color(0xFFEFD9B0).withValues(alpha: 0.7),
                   ),
                 ),
                 const SizedBox(width: 4),
                 Icon(
                   Icons.arrow_forward,
                   size: 12,
-                  color: const Color(0xFFEFD9B0).withOpacity(0.7),
+                  color: const Color(0xFFEFD9B0).withValues(alpha: 0.7),
                 ),
               ],
             ),
@@ -406,7 +407,7 @@ class _HomeState extends State<Home> {
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 10,
-                    color: const Color(0xFFEFD9B0).withOpacity(0.7),
+                    color: const Color(0xFFEFD9B0).withValues(alpha: 0.7),
                   ),
                 ),
               ],

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../services/auth/auth_service.dart';
+import '../../core/theme/app_colors.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final AuthService _authService = AuthService();
   bool _isPasswordVisible = false;
   bool _isLoading = false;
+  bool _rememberMe = false;
 
   @override
   void dispose() {
@@ -113,103 +117,237 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Back Button
-                IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.black),
-                  onPressed: () => Navigator.pop(context),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 20),
 
-                // Welcome Text
-                const Text(
-                  'Welcome back! Glad\nto see you, Again!',
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    height: 1.2,
+                // Logo Icon
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryBlue,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Center(
+                    child: SvgPicture.asset(
+                      'lib/Resources/logo.svg',
+                      width: 40,
+                      height: 40,
+                      colorFilter: const ColorFilter.mode(
+                        Colors.white,
+                        BlendMode.srcIn,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 40),
 
+                // Title
+                Text(
+                  'Get Started now',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 12),
+
+                // Subtitle
+                Text(
+                  'Create an account or log in to explore about our app',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 14,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: 60),
+
                 // Email TextField
-                TextField(
-                  controller: _emailController,
-                  decoration: InputDecoration(
-                    hintText: 'Enter your email',
-                    hintStyle: TextStyle(color: Colors.grey[400]),
-                    filled: true,
-                    fillColor: const Color(0xFFF7F8F9),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 18,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 15),
-
-                // Password TextField
-                TextField(
-                  controller: _passwordController,
-                  obscureText: !_isPasswordVisible,
-                  decoration: InputDecoration(
-                    hintText: 'Enter your password',
-                    hintStyle: TextStyle(color: Colors.grey[400]),
-                    filled: true,
-                    fillColor: const Color(0xFFF7F8F9),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 18,
-                    ),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _isPasswordVisible
-                            ? Icons.visibility_outlined
-                            : Icons.visibility_off_outlined,
-                        color: Colors.grey[600],
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.shadowBlack.withValues(alpha: 0.86),
+                        offset: const Offset(0, 4),
+                        blurRadius: 12.2,
+                        spreadRadius: 0,
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _isPasswordVisible = !_isPasswordVisible;
-                        });
-                      },
-                    ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 15),
-
-                // Forgot Password
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/forgot-password');
-                    },
-                    child: const Text(
-                      'Forgot Password?',
-                      style: TextStyle(color: Colors.grey, fontSize: 14),
+                  child: TextField(
+                    controller: _emailController,
+                    style: const TextStyle(color: AppColors.textPrimary),
+                    decoration: InputDecoration(
+                      hintText: 'Loisbecket@gmail.com',
+                      hintStyle: GoogleFonts.plusJakartaSans(
+                        color: AppColors.textSecondary,
+                      ),
+                      filled: true,
+                      fillColor: AppColors.inputBackground,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(
+                          color: AppColors.inputBorder,
+                          width: 1,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(
+                          color: AppColors.inputBorder,
+                          width: 1,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(
+                          color: AppColors.inputBorder,
+                          width: 1,
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 18,
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(height: 20),
+
+                // Password TextField
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.shadowBlack.withValues(alpha: 0.86),
+                        offset: const Offset(0, 4),
+                        blurRadius: 12.2,
+                        spreadRadius: 0,
+                      ),
+                    ],
+                  ),
+                  child: TextField(
+                    controller: _passwordController,
+                    obscureText: !_isPasswordVisible,
+                    style: const TextStyle(color: AppColors.textPrimary),
+                    decoration: InputDecoration(
+                      hintText: '*******',
+                      hintStyle: GoogleFonts.plusJakartaSans(
+                        color: AppColors.textSecondary,
+                        fontSize: 20,
+                      ),
+                      filled: true,
+                      fillColor: AppColors.inputBackground,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(
+                          color: AppColors.inputBorder,
+                          width: 1,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(
+                          color: AppColors.inputBorder,
+                          width: 1,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(
+                          color: AppColors.inputBorder,
+                          width: 1,
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 18,
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordVisible
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                          color: AppColors.textSecondary,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // Remember me & Forgot Password Row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: Checkbox(
+                            value: _rememberMe,
+                            onChanged: (value) {
+                              setState(() {
+                                _rememberMe = value ?? false;
+                              });
+                            },
+                            fillColor: WidgetStateProperty.resolveWith((
+                              states,
+                            ) {
+                              if (states.contains(WidgetState.selected)) {
+                                return AppColors.primaryBlue;
+                              }
+                              return AppColors.inputBorder;
+                            }),
+                            checkColor: Colors.white,
+                            side: const BorderSide(
+                              color: AppColors.inputBorder,
+                              width: 1,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Remember me',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 14,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/forgot-password');
+                      },
+                      child: Text(
+                        'Forgot Password ?',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 14,
+                          color: AppColors.primaryBlue,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 30),
 
                 // Login Button
                 SizedBox(
@@ -218,13 +356,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: ElevatedButton(
                     onPressed: _isLoading ? null : _login,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1E232C),
-                      disabledBackgroundColor: const Color(
-                        0xFF1E232C,
-                      ).withValues(alpha: 0.6),
+                      backgroundColor: AppColors.primaryBlue,
+                      disabledBackgroundColor: AppColors.primaryBlue.withValues(
+                        alpha: 0.6,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
+                      elevation: 0,
                     ),
                     child: _isLoading
                         ? const SizedBox(
@@ -237,9 +376,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                           )
-                        : const Text(
-                            'Login',
-                            style: TextStyle(
+                        : Text(
+                            'Log In',
+                            style: GoogleFonts.plusJakartaSans(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
@@ -249,69 +388,132 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 35),
 
-                // Or Login with
-                const Row(
+                // Or Divider
+                Row(
                   children: [
-                    Expanded(child: Divider()),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        'Or Login with',
-                        style: TextStyle(color: Colors.grey, fontSize: 14),
+                    const Expanded(
+                      child: Divider(
+                        color: AppColors.borderColor,
+                        thickness: 1,
                       ),
                     ),
-                    Expanded(child: Divider()),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        'Or',
+                        style: GoogleFonts.plusJakartaSans(
+                          color: AppColors.textSecondary,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                    const Expanded(
+                      child: Divider(
+                        color: AppColors.borderColor,
+                        thickness: 1,
+                      ),
+                    ),
                   ],
                 ),
-                const SizedBox(height: 25),
+                const SizedBox(height: 35),
 
-                // Social Login Buttons
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildSocialButton(
-                      icon: Icons.facebook,
-                      color: const Color(0xFF1877F2),
-                      onPressed: _isLoading ? () {} : _signInWithFacebook,
+                // Continue with Google
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: OutlinedButton(
+                    onPressed: _isLoading ? null : _signInWithGoogle,
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: AppColors.googleBackground,
+                      side: const BorderSide(
+                        color: AppColors.borderColor,
+                        width: 1,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
-                    _buildSocialButton(
-                      icon: Icons.g_mobiledata,
-                      color: const Color(0xFFDB4437),
-                      onPressed: _isLoading ? () {} : _signInWithGoogle,
-                      isGoogle: true,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          'lib/Resources/google.svg',
+                          height: 24,
+                          width: 24,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          'Continue with Google',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
                     ),
-                    _buildSocialButton(
-                      icon: Icons.apple,
-                      color: Colors.black,
-                      onPressed: () {
-                        // Handle Apple login (requires additional setup)
-                        _showMessage(
-                          'Apple sign-in coming soon',
-                          isError: false,
-                        );
-                      },
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Continue with Facebook
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: OutlinedButton(
+                    onPressed: _isLoading ? null : _signInWithFacebook,
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: AppColors.facebookBackground,
+                      side: const BorderSide(
+                        color: AppColors.borderColor,
+                        width: 1,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
-                  ],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          'lib/Resources/Facebook.svg',
+                          height: 24,
+                          width: 24,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          'Continue with Facebook',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 40),
 
-                // Register Link
+                // Sign Up Link
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
+                    Text(
                       "Don't have an account? ",
-                      style: TextStyle(color: Colors.black, fontSize: 14),
+                      style: GoogleFonts.plusJakartaSans(
+                        color: AppColors.textSecondary,
+                        fontSize: 14,
+                      ),
                     ),
                     GestureDetector(
                       onTap: () {
-                        // Navigate to register screen
                         Navigator.pushNamed(context, '/register');
                       },
-                      child: const Text(
-                        'Register Now',
-                        style: TextStyle(
-                          color: Color(0xFF35C2C1),
+                      child: Text(
+                        'Sign Up',
+                        style: GoogleFonts.plusJakartaSans(
+                          color: AppColors.primaryBlue,
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                         ),
@@ -323,26 +525,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildSocialButton({
-    required IconData icon,
-    required Color color,
-    required VoidCallback onPressed,
-    bool isGoogle = false,
-  }) {
-    return Container(
-      width: 90,
-      height: 56,
-      decoration: BoxDecoration(
-        border: Border.all(color: const Color(0xFFE8ECF4)),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: IconButton(
-        icon: Icon(icon, color: color, size: isGoogle ? 40 : 30),
-        onPressed: onPressed,
       ),
     );
   }

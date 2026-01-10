@@ -48,10 +48,10 @@ class _SplashScreenState extends State<SplashScreen>
 
     // Navigate to appropriate screen
     // If user is logged in, go directly to home (maintaining previous state)
-    // Otherwise, show welcome screen
+    // Otherwise, show login screen
     Navigator.of(
       context,
-    ).pushReplacementNamed(isLoggedIn ? AppRoutes.home : AppRoutes.welcome);
+    ).pushReplacementNamed(isLoggedIn ? AppRoutes.home : AppRoutes.login);
   }
 
   @override

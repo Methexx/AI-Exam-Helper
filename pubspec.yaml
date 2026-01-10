@@ -85,6 +85,9 @@ flutter:
   assets:
     - lib/Resources/img.svg
     - lib/Resources/joy.svg
+    - lib/Resources/logo.svg
+    - lib/Resources/google.svg
+    - lib/Resources/Facebook.svg
     - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
