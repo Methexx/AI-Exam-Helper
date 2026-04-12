@@ -1,4 +1,4 @@
-# 📘 AI Exam Helper App
+ # 📘 AI Exam Helper App
 
 An AI-powered mobile application designed to help students **study and prepare for exams** by scanning questions from images, extracting text using OCR, and generating **step-by-step explanations** using a large language model.
 
