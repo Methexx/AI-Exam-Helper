@@ -3,7 +3,7 @@
 An AI-powered mobile application designed to help students **study and prepare for exams** by scanning questions from images, extracting text using OCR, and generating **step-by-step explanations** using a large language model.
 
 > ⚠️ **Ethical Notice**: This app is intended for **learning, revision, and practice only**. It is not designed to encourage cheating during live examinations.
-
+  
 ---
 
 ## 🚀 Project Overview
